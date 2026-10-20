@@ -1,0 +1,14 @@
+[Unit]
+Description=project celery beat
+After=network.target
+
+[Service]
+User=project
+Group=project
+WorkingDirectory=/srv/project/app
+EnvironmentFile=/srv/project/.env
+ExecStart=/srv/project/app/.venv/bin/celery -A config.celery_app beat -l info
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

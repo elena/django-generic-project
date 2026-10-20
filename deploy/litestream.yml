@@ -1,0 +1,19 @@
+# /etc/litestream.yml — continuous SQLite replication (https://litestream.io).
+# Run with the `litestream` systemd service shipped by the package.
+# Restore: litestream restore -o /srv/project/data/db.sqlite3 /srv/project/data/db.sqlite3
+dbs:
+  - path: /srv/project/data/db.sqlite3
+    replicas:
+      # Any S3-compatible bucket (AWS, Backblaze B2, Cloudflare R2, MinIO...).
+      - type: s3
+        bucket: project-backups
+        path: db
+        endpoint: https://s3.example.com
+        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}
+      # Or a second server over SFTP:
+      # - type: sftp
+      #   host: backup.example.com:22
+      #   user: project
+      #   key-path: /home/project/.ssh/id_ed25519
+      #   path: /backups/project/db

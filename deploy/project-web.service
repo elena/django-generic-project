@@ -1,0 +1,17 @@
+[Unit]
+Description=project gunicorn
+After=network.target
+
+[Service]
+User=project
+Group=project
+WorkingDirectory=/srv/project/app
+EnvironmentFile=/srv/project/.env
+RuntimeDirectory=project
+ExecStart=/srv/project/app/.venv/bin/gunicorn config.wsgi:application \
+    --bind unix:/run/project/gunicorn.sock \
+    --workers ${WEB_CONCURRENCY} --access-logfile -
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

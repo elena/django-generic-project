@@ -1,0 +1,24 @@
+# /etc/caddy/Caddyfile — Caddy obtains and renews TLS certificates automatically.
+example.com {
+	encode zstd gzip
+
+	# User uploads straight from disk (WhiteNoise only serves static files).
+	handle_path /media/* {
+		root * /srv/project/data/media
+		file_server
+		header X-Content-Type-Options nosniff
+	}
+
+	# Everything else (including /static/ via WhiteNoise) goes to gunicorn.
+	handle {
+		reverse_proxy unix//run/project/gunicorn.sock
+	}
+
+	request_body {
+		max_size 20MB
+	}
+}
+
+www.example.com {
+	redir https://example.com{uri} permanent
+}

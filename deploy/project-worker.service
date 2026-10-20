@@ -1,0 +1,16 @@
+[Unit]
+Description=project celery worker
+After=network.target
+
+[Service]
+User=project
+Group=project
+WorkingDirectory=/srv/project/app
+EnvironmentFile=/srv/project/.env
+ExecStart=/srv/project/app/.venv/bin/celery -A config.celery_app worker -l info --concurrency 2
+Restart=on-failure
+KillSignal=SIGTERM
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target
